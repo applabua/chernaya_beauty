@@ -8,8 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --brand1:#a8ebf7;    /* світліше тло як у лого */
-      --brand2:#7ddff0;
+      --brand1:#a8ebf7; --brand2:#7ddff0;
       --text:#063a3a;
       --card:rgba(255,255,255,.22); --border:rgba(255,255,255,.35);
       --radius:22px; --shadow:0 14px 40px rgba(0,0,0,.35);
@@ -25,33 +24,19 @@
         radial-gradient(900px 900px at 120% 120%, rgba(255,255,255,.20), transparent 60%),
         linear-gradient(180deg, var(--brand1) 0%, var(--brand2) 100%);
     }
-    body::after{
-      content:""; position:fixed; inset:0; pointer-events:none;
+    body::after{content:""; position:fixed; inset:0; pointer-events:none;
       background-image:radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
-      background-size:4px 4px; opacity:.35; mix-blend-mode:soft-light;
-    }
+      background-size:4px 4px; opacity:.35; mix-blend-mode:soft-light;}
 
-    /* Текстовий логотип як у зразку */
-    .wordmark{
-      position:fixed; z-index:10;
-      top:calc(env(safe-area-inset-top,0px) + 8px);
-      left:calc(env(safe-area-inset-left,0px) + 10px);
-      filter: drop-shadow(0 2px 10px rgba(0,0,0,.12));
-      pointer-events:none;
-    }
+    /* Логотип */
+    .wordmark{position:fixed; z-index:10; top:calc(env(safe-area-inset-top,0px) + 8px);
+      left:calc(env(safe-area-inset-left,0px) + 10px); filter:drop-shadow(0 2px 10px rgba(0,0,0,.12)); pointer-events:none;}
     .wordmark .inner{position:relative; display:inline-block}
-    .wordmark .chernaya{
-      font-family:'Great Vibes', cursive;
-      font-size:58px; line-height:1; color:#000; letter-spacing:.5px;
-    }
-    .wordmark .tag{
-      position:absolute; top:-10px; right:-10px;
-      font-family:'Montserrat',system-ui,Arial; font-weight:800;
-      color:#3ccad7; background:#fff; padding:6px 10px;
-      border-radius:4px; letter-spacing:1.5px; font-size:14px;
-      transform:skew(-8deg) rotate(-3deg);
-      box-shadow:0 4px 12px rgba(0,0,0,.15);
-    }
+    .wordmark .chernaya{font-family:'Great Vibes', cursive; font-size:58px; line-height:1; color:#000; letter-spacing:.5px}
+    .wordmark .tag{position:absolute; top:-12px; right:-18px;
+      font-family:'Montserrat',system-ui,Arial; font-weight:800; color:#3ccad7; background:#fff;
+      padding:5px 9px; border-radius:4px; letter-spacing:1.5px; font-size:12px;
+      transform:skew(-8deg) rotate(-3deg); box-shadow:0 4px 12px rgba(0,0,0,.15)}
 
     /* Прелоадер */
     #loader{position:fixed; inset:0; display:grid; place-items:center; z-index:999;
@@ -65,90 +50,54 @@
       animation:spin 1.1s linear infinite; filter:drop-shadow(0 8px 22px rgba(0,0,0,.35))}
     @keyframes spin{to{transform:rotate(1turn)}}
 
-    /* Центрування */
-    .wrap{
-      position:fixed; inset:0; display:grid; place-items:center;
+    /* Центр */
+    .wrap{position:fixed; inset:0; display:grid; place-items:center;
       height:calc(var(--vh) * 100); padding:18px;
       padding-left:max(18px, env(safe-area-inset-left));
       padding-right:max(18px, env(safe-area-inset-right));
       padding-top:max(18px, env(safe-area-inset-top));
-      padding-bottom:max(18px, env(safe-area-inset-bottom));
-    }
+      padding-bottom:max(18px, env(safe-area-inset-bottom));}
 
-    /* Картка */
-    .card{
-      width:min(900px,100%);
-      background:var(--card); border:1px solid var(--border);
-      border-radius:var(--radius); box-shadow:var(--shadow);
-      backdrop-filter:blur(14px) saturate(140%);
-      padding:18px 18px 16px;
-      max-height:calc(var(--vh) * 100 - 56px);
-      display:grid; gap:12px;
-    }
+    .card{width:min(900px,100%); background:var(--card); border:1px solid var(--border);
+      border-radius:var(--radius); box-shadow:var(--shadow); backdrop-filter:blur(14px) saturate(140%);
+      padding:18px 18px 16px; max-height:calc(var(--vh) * 100 - 56px); display:grid; gap:12px;}
 
     .hero{ text-align:center; color:#052f2f; margin:0; line-height:1.25; font-size:22px; }
     .addr{ margin:2px 0 10px; text-align:center; font-size:14px; color:#084242 }
 
-    .form{display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start}
+    .form{display:grid; grid-template-columns:1fr 1fr; column-gap:14px; row-gap:12px; align-content:start}
     .form .wide{grid-column:1/-1}
     label{display:block; margin-bottom:6px}
-    input, .fake-input{
-      width:100%; min-width:0; height:var(--field-h);
-      font:700 16px/1 Arial, Helvetica, sans-serif; color:#082d2d;
-      background:#ffffff; border:1px solid rgba(0,0,0,.08);
-      border-radius:14px; padding:0 14px; outline:none;
-      box-shadow:inset 0 1px 0 rgba(0,0,0,.04);
-      transition:border-color .15s, box-shadow .15s;
-      display:flex; align-items:center;
-    }
+    input, .fake-input{width:100%; min-width:0; height:var(--field-h);
+      font:700 16px/1 Arial, Helvetica, sans-serif; color:#082d2d; background:#ffffff;
+      border:1px solid rgba(0,0,0,.08); border-radius:14px; padding:0 14px; outline:none;
+      box-shadow:inset 0 1px 0 rgba(0,0,0,.04); transition:border-color .15s, box-shadow .15s; display:flex; align-items:center}
     input::placeholder{color:#6b8b8b; font-weight:700}
     input:focus{border-color:#19b6c3; box-shadow:0 0 0 3px rgba(25,182,195,.25)}
 
-    /* Центр: кнопка вибору послуги */
-    .center{grid-column:1/-1; display:grid; place-items:center}
-    .btn-white{
-      background:#fff; color:#0a5f65;
-      border:1px solid rgba(0,0,0,.06);
-      box-shadow:0 8px 20px rgba(0,0,0,.18), inset 0 0 0 1px rgba(0,0,0,.04);
-      padding:12px 18px; border-radius:14px; font-size:16px; letter-spacing:.2px; cursor:pointer;
-      transition:filter .18s, transform .06s
-    }
-    .btn-white:hover{filter:brightness(1.03)}
-    .btn-white:active{transform:translateY(1px)}
+    /* Кнопки */
+    .btn-primary{width:100%; padding:14px 16px; border-radius:14px; border:1px solid rgba(0,0,0,.04);
+      background:linear-gradient(135deg, #13c2be, #11a9a5); color:#003b3a; text-shadow:0 1px 0 rgba(255,255,255,.45);
+      font-size:16px; letter-spacing:.2px; cursor:pointer; box-shadow:0 10px 26px rgba(0,0,0,.22);
+      transition:filter .18s, transform .06s}
+    .btn-primary:hover{filter:brightness(1.05)}
+    .btn-primary:active{transform:translateY(1px)}
 
-    /* Віконце вибраної послуги */
-    .chosen-box{
-      margin-top:8px; grid-column:1/-1;
-      background:#fff; border:1px solid rgba(0,0,0,.08);
-      border-radius:14px; padding:10px 14px;
-      box-shadow:0 8px 22px rgba(0,0,0,.12);
-      display:flex; justify-content:space-between; gap:8px; color:#063a3a; width:min(520px, 100%);
-    }
+    /* Вибрана послуга — фіксована висота */
+    .chosen-box{grid-column:1/-1; background:#fff; border:1px solid rgba(0,0,0,.08);
+      border-radius:14px; padding:10px 14px; box-shadow:0 8px 22px rgba(0,0,0,.12);
+      display:flex; justify-content:space-between; gap:8px; color:#063a3a; width:100%;
+      min-height:var(--field-h); align-items:center}
     .chosen-name{font-weight:800}
     .chosen-price{white-space:nowrap; font-weight:900}
 
-    /* Дата/Час */
+    /* Селекти */
     .select-wrap{position:relative}
-    .select-wrap select{
-      width:100%; min-width:0; height:var(--field-h);
-      font:700 15px/1 Arial, Helvetica, sans-serif; color:#082d2d;
-      background:#ffffff; border:1px solid rgba(0,0,0,.08);
-      border-radius:14px; padding:0 12px; outline:none;
-      appearance:none; box-shadow:inset 0 1px 0 rgba(0,0,0,.04);
-    }
+    .select-wrap select{width:100%; min-width:0; height:var(--field-h);
+      font:700 14px/1 Arial, Helvetica, sans-serif; color:#082d2d; background:#ffffff;
+      border:1px solid rgba(0,0,0,.08); border-radius:14px; padding:0 12px; outline:none;
+      appearance:none; box-shadow:inset 0 1px 0 rgba(0,0,0,.04)}
     .select-wrap::after{content:"▾"; position:absolute; right:12px; top:50%; translate:0 -50%; color:#0b5252; pointer-events:none; font-size:16px}
-
-    /* Кнопка підтвердження внизу */
-    .actions{grid-column:1/-1; margin-top:6px}
-    .btn-primary{
-      width:100%; padding:14px 16px; border-radius:14px; border:1px solid rgba(0,0,0,.04);
-      background:linear-gradient(135deg, #13c2be, #11a9a5);
-      color:#003b3a; text-shadow:0 1px 0 rgba(255,255,255,.45);
-      font-size:16px; letter-spacing:.2px; cursor:pointer; box-shadow:0 10px 26px rgba(0,0,0,.22);
-      transition:filter .18s, transform .06s
-    }
-    .btn-primary:hover{filter:brightness(1.05)}
-    .btn-primary:active{transform:translateY(1px)}
 
     .toast{position:fixed; right:18px; bottom:18px; z-index:50; background:rgba(0,0,0,.65); color:#fff;
       border:1px solid rgba(255,255,255,.28); border-radius:14px; padding:12px 14px; box-shadow:var(--shadow);
@@ -159,37 +108,24 @@
     .modal{position:fixed; inset:0; display:grid; place-items:center; z-index:60;
       background:rgba(0,0,0,.42); opacity:0; visibility:hidden; transition:.25s}
     .modal.show{opacity:1; visibility:visible}
-    .panel{
-      width:min(880px, 96vw); max-height:min(90vh, 720px);
-      background:#f6fffe; color:#033; border-radius:18px; border:1px solid #c7eceb;
-      box-shadow:0 20px 60px rgba(0,0,0,.35); overflow:auto; padding:14px 14px 6px;
-    }
+    .panel{width:min(880px, 96vw); max-height:min(90vh, 720px); background:#f6fffe; color:#033;
+      border-radius:18px; border:1px solid #c7eceb; box-shadow:0 20px 60px rgba(0,0,0,.35);
+      overflow:auto; padding:14px 14px 6px}
     .panel h3{margin:0 0 8px; text-align:center}
     details{border:1px solid #bfe9e7; border-radius:12px; padding:8px 10px; background:#ffffff; margin:8px 0}
     details[open]{background:#f2fffe}
-    details > summary{cursor:pointer; list-style:none; font-weight:800; color:#055; outline:none}
-    details > summary::-webkit-details-marker{display:none}
+    details>summary{cursor:pointer; list-style:none; font-weight:800; color:#055; outline:none}
+    details>summary::-webkit-details-marker{display:none}
     .price-list{margin:8px 0 0; padding:0; list-style:none}
     .price-item{display:flex; justify-content:space-between; gap:8px; padding:8px 0; border-top:1px dashed #c7dedd}
     .price-item:first-child{border-top:none}
-    .price-item button{
-      all:unset; cursor:pointer; display:flex; justify-content:space-between; width:100%;
-      padding:6px 4px; border-radius:8px;
-    }
+    .price-item button{all:unset; cursor:pointer; display:flex; justify-content:space-between; width:100%; padding:6px 4px; border-radius:8px}
     .price-item button:hover{background:#eef8f7}
     .pr-name{max-width:76%}
     .pr-price{white-space:nowrap; font-weight:900}
 
-    /* Адаптив — щоб Дата/Час не накладались */
-    @media (max-width:420px){
-      :root{--field-h:46px}
-      .select-wrap select{font-size:14px}
-      .wordmark .chernaya{font-size:52px}
-      .wordmark .tag{font-size:12px; top:-8px}
-    }
-    @media (max-width:360px){
-      .form{grid-template-columns:1fr} /* у дуже вузьких — один під одним */
-    }
+    /* Адаптив, щоб Дата/Час не накладались */
+    @media (max-width:430px){ .form{grid-template-columns:1fr} .select-wrap select{font-size:13px} }
   </style>
 </head>
 <body>
@@ -204,7 +140,7 @@
     </div>
   </div>
 
-  <!-- Центрована секція -->
+  <!-- Центр -->
   <main class="wrap">
     <section class="card" role="region" aria-label="Форма запису">
       <h2 class="hero">Ваша територія краси ✨</h2>
@@ -217,16 +153,16 @@
         </div>
 
         <div class="field wide">
-          <label for="phone">Телефон (міжнародний формат)</label>
+          <label for="phone">Телефон</label>
           <input id="phone" type="tel" inputmode="tel" placeholder="+380..." required>
         </div>
 
-        <!-- Центр: кнопка вибору послуги -->
-        <div class="center">
-          <button type="button" class="btn-white" id="openPrice">Обрати послугу</button>
+        <!-- Кнопка вибору послуги (той самий стиль і розмір, що й підтвердження) -->
+        <div class="wide">
+          <button type="button" class="btn-primary" id="openPrice">Обрати послугу</button>
         </div>
 
-        <!-- Красиве віконце з вибором -->
+        <!-- Фіксоване віконце вибраної послуги -->
         <div id="chosenBox" class="chosen-box" style="display:none;">
           <div class="chosen-name" id="chosenName"></div>
           <div class="chosen-price" id="chosenPrice"></div>
@@ -237,7 +173,6 @@
           <label for="date">Дата</label>
           <input id="date" type="date" required>
         </div>
-
         <div class="field">
           <label for="time">Час</label>
           <div class="select-wrap">
@@ -245,8 +180,8 @@
           </div>
         </div>
 
-        <!-- Кнопка підтвердження внизу -->
-        <div class="actions">
+        <!-- Кнопка підтвердження -->
+        <div class="wide">
           <button class="btn-primary" type="submit">Підтвердити запис</button>
         </div>
 
@@ -302,7 +237,7 @@
       </details>
 
       <div style="text-align:center; padding:8px 0 4px;">
-        <button id="closePrice" type="button" class="btn-white" style="width:auto;">Закрити</button>
+        <button id="closePrice" type="button" class="btn-primary" style="width:auto; min-width:180px;">Закрити</button>
       </div>
     </div>
   </div>
@@ -317,7 +252,7 @@
     })();
 
     const TIME_SLOTS=["10:00","11:30","13:00","15:00","16:30","18:00"];
-    const KEY_ALL="bookings_teal_all_v3", KEY_MINE="bookings_teal_mine_v3";
+    const KEY_ALL="bookings_teal_all_v4", KEY_MINE="bookings_teal_mine_v4";
 
     const $=s=>document.querySelector(s);
     const toast=t=>{const el=$("#toast"); el.textContent=t; el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),2200)}
@@ -364,7 +299,7 @@
     });
     const validPhone=v=>/^\+\d{10,15}$/.test(v);
 
-    /* Сабміт з кнопкою "Підтвердити запис" */
+    /* Сабміт */
     $("#bookForm").addEventListener("submit",e=>{
       e.preventDefault();
       const name=nameInp.value.trim();
@@ -386,23 +321,23 @@
       generateSlots(date);
     });
 
-    /* МОДАЛКА ПРАЙСУ */
+    /* МОДАЛКА ПРАЙСУ — делегування, можна вибирати скільки завгодно разів */
     const modal=$("#priceModal"), openPrice=$("#openPrice"), closePrice=$("#closePrice");
     const open=()=>{modal.classList.add("show"); modal.setAttribute("aria-hidden","false")}
     const close=()=>{modal.classList.remove("show"); modal.setAttribute("aria-hidden","true")}
-    openPrice.addEventListener("click",open); closePrice.addEventListener("click",close);
-    modal.addEventListener("click",e=>{ if(e.target===modal) close(); });
-
-    modal.querySelectorAll(".price-item button").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const name=btn.dataset.name;
-        const price=parseInt(btn.dataset.price||"0",10);
-        selectedService={name, price};
-        chosenName.textContent=name;
-        chosenPrice.textContent=fmtUAH(price);
-        chosenBox.style.display="flex";
-        close();
-      });
+    openPrice.addEventListener("click",open);
+    closePrice.addEventListener("click",close);
+    modal.addEventListener("click",e=>{
+      if(e.target===modal) { close(); return; }
+      const btn = e.target.closest(".price-item button");
+      if(!btn) return;
+      const name=btn.dataset.name;
+      const price=parseInt(btn.dataset.price||"0",10);
+      selectedService={name, price};
+      chosenName.textContent=name;
+      chosenPrice.textContent=fmtUAH(price);
+      chosenBox.style.display="flex";  // фіксована висота у CSS
+      close();
     });
   </script>
 </body>
