@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <title>Запис до салону краси</title>
+  <style>
+    :root{
+      --brand:#18c7c4;              /* бірюзовий (під колір логотипу) */
+      --brand-dark:#12a5a2;
+      --text:#0b1b1b;
+      --onbrand:#ffffff;
+      --glass:rgba(255,255,255,.12);
+      --border:rgba(255,255,255,.22);
+      --radius:22px;
+      --shadow:0 14px 40px rgba(0,0,0,.35);
+      --vh:1vh;
+      --field-h:52px;               /* однакова висота полів */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; overscroll-behavior:none; -webkit-text-size-adjust:100%;}
+    body{
+      margin:0; font-family:Arial,Helvetica,sans-serif; font-weight:700; color:#0d2222;
+      overflow:hidden;                                           /* без скролу */
+      background:
+        radial-gradient(1200px 1200px at 10% -10%, rgba(255,255,255,.25), transparent 55%),
+        radial-gradient(900px 900px at 120% 120%, rgba(255,255,255,.18), transparent 60%),
+        linear-gradient(180deg, var(--brand) 0%, #11b6b2 100%);  /* бірюзовий фон */
+    }
+    /* легка зернистість */
+    body::after{
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image:radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size:4px 4px; opacity:.35; mix-blend-mode:soft-light;
+    }
+
+    /* Логотип з урахуванням safe-area */
+    .logo{
+      position:fixed; z-index:10;
+      top:calc(env(safe-area-inset-top,0px) + 10px);
+      left:calc(env(safe-area-inset-left,0px) + 12px);
+      padding:8px 10px; border-radius:14px;
+      background:rgba(0,0,0,.12); border:1px solid rgba(255,255,255,.25);
+      backdrop-filter:blur(8px) saturate(130%);
+      display:flex; align-items:center; gap:10px;
+    }
+    .logo img{height:40px; width:auto; display:block; border-radius:8px}
+    .logo span{color:#023737; text-shadow:0 1px 0 rgba(255,255,255,.35)}
+
+    /* Прелоадер */
+    #loader{position:fixed; inset:0; display:grid; place-items:center; z-index:999;
+      background:linear-gradient(135deg, rgba(0,0,0,.35), rgba(0,0,0,.25)); transition:opacity .4s, visibility .4s}
+    #loader.hide{opacity:0; visibility:hidden}
+    .ring{width:86px; height:86px; border-radius:50%;
+      background:conic-gradient(from 0deg, #ffffff, rgba(255,255,255,.1), #ffffff);
+      -webkit-mask: radial-gradient(circle 34px, transparent 31px, #000 32px);
+              mask: radial-gradient(circle 34px, transparent 31px, #000 32px);
+      animation:spin 1.1s linear infinite; filter:drop-shadow(0 8px 22px rgba(0,0,0,.35))}
+    @keyframes spin{to{transform:rotate(1turn)}}
+
+    /* Центруючий контейнер */
+    .wrap{
+      position:fixed; inset:0; z-index:1;
+      display:grid; place-items:center;
+      height:calc(var(--vh) * 100);
+      padding:22px;
+      padding-left:max(22px, env(safe-area-inset-left));
+      padding-right:max(22px, env(safe-area-inset-right));
+      padding-top:max(22px, env(safe-area-inset-top));
+      padding-bottom:max(22px, env(safe-area-inset-bottom));
+    }
+
+    /* Карточка */
+    .card{
+      width:min(980px, 100%);
+      background:rgba(255,255,255,.22);
+      border:1px solid rgba(255,255,255,.35);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px) saturate(140%);
+      padding:26px;
+    }
+    h1{margin:0 0 6px; font-size:36px; line-height:1.15; color:#062f2f}
+    .subtitle{margin:0 0 18px; font-size:16px; color:#0c3d3d}
+    .chip{display:inline-block; padding:4px 10px; border-radius:999px; font-size:14px;
+      background:#0e7e7c; color:var(--onbrand); letter-spacing:.2px}
+
+    /* Опис + форма у дві колонки */
+    .grid{display:grid; grid-template-columns:1.1fr 1fr; gap:22px}
+    @media (max-width:860px){ .grid{grid-template-columns:1fr; } }
+
+    .desc{
+      background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.35);
+      border-radius:18px; padding:16px 16px 14px;
+      color:#073838; font-weight:700;
+    }
+    .desc ul{margin:8px 0 0 18px; padding:0}
+    .desc li{margin:6px 0}
+
+    /* Форма */
+    .form{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+    .form .wide{grid-column:1/-1}
+
+    label{display:block; margin-bottom:6px; color:#073838}
+    input, select{
+      width:100%; height:var(--field-h);
+      font:700 16px/1 Arial, Helvetica, sans-serif; color:#082d2d;
+      background:#ffffff; border:1px solid rgba(0,0,0,.08);
+      border-radius:14px; padding:0 14px; outline:none;
+      box-shadow:inset 0 1px 0 rgba(0,0,0,.04);
+      transition:border-color .15s, box-shadow .15s, transform .02s;
+      appearance:none;
+    }
+    input::placeholder{color:#6b8b8b; font-weight:700}
+    input:focus, select:focus{border-color:#0c7f7c; box-shadow:0 0 0 3px rgba(24,199,196,.25)}
+    .select-wrap{position:relative}
+    .select-wrap::after{content:"▾"; position:absolute; right:12px; top:50%; translate:0 -50%; color:#0b5252; pointer-events:none; font-size:16px}
+    option{color:#0b1b1b; background:#fff; font-weight:700}
+
+    .info{margin-top:6px; color:#0a3b3b; font-size:14px}
+    .btn{
+      display:inline-grid; place-items:center; width:100%;
+      padding:14px 16px; border-radius:14px; border:1px solid rgba(0,0,0,.04);
+      background:linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color:#003b3a; text-shadow:0 1px 0 rgba(255,255,255,.45);
+      font-size:16px; letter-spacing:.2px; cursor:pointer;
+      box-shadow:0 10px 26px rgba(0,0,0,.22);
+      transition:transform .06s, filter .18s}
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:translateY(1px)}
+
+    .toast{position:fixed; right:18px; bottom:18px; z-index:50; background:rgba(0,0,0,.65); color:#fff;
+      border:1px solid rgba(255,255,255,.28); border-radius:14px; padding:12px 14px; box-shadow:var(--shadow);
+      opacity:0; translate:0 14px; transition:all .25s ease}
+    .toast.show{opacity:1; translate:0 0}
+
+    /* Компакт для вузьких/низьких екранів */
+    @media (max-width:480px){
+      .logo{padding:6px 8px}
+      .logo img{height:34px}
+      .card{padding:18px; border-radius:18px}
+      h1{font-size:28px}
+      :root{ --field-h:50px; }
+    }
+    @media (max-height:640px){
+      :root{ --field-h:46px; }
+      .card{padding:16px}
+      h1{font-size:26px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Прелоадер -->
+  <div id="loader"><div class="ring" aria-label="loading"></div></div>
+
+  <!-- Логотип зліва вгорі -->
+  <div class="logo" aria-label="Логотип салону">
+    <img src="https://i.ibb.co/XvhJ4cX/a03f570e-30a1-4075-9164-39ef3d7dde2d.png" alt="Logo">
+    <span><b>Ваш простір краси</b></span>
+  </div>
+
+  <!-- Центрована секція -->
+  <main class="wrap">
+    <section class="card">
+      <h1>Онлайн-запис <span class="chip">швидко та зручно</span></h1>
+      <p class="subtitle">Манікюр • Педикюр • Брови • Ресниці • Масаж — <b>зекономимо ваш час</b> і створимо настрій ✨</p>
+
+      <div class="grid">
+        <!-- Опис -->
+        <div class="desc">
+          Ми працюємо в 4–6 рук, тож легко підберемо зручний час.  
+          <ul>
+            <li>Бірюзова зона комфорту — чистота, стерильність, турбота</li>
+            <li>Адреса: Каманіна 16а/4, Одеса (65019)</li>
+            <li>Запис онлайн нижче — підтвердження одразу в браузері</li>
+          </ul>
+        </div>
+
+        <!-- Форма -->
+        <form id="bookForm" class="form" autocomplete="off">
+          <div class="field wide">
+            <label for="name">Ім'я</label>
+            <input id="name" type="text" placeholder="Ваше ім'я" required>
+          </div>
+
+          <div class="field wide">
+            <label for="phone">Телефон (міжнародний формат)</label>
+            <input id="phone" type="tel" inputmode="tel" placeholder="+380..." required>
+          </div>
+
+          <div class="field">
+            <label for="service">Послуга</label>
+            <div class="select-wrap">
+              <select id="service" required></select>
+            </div>
+            <div id="serviceInfo" class="info"></div>
+          </div>
+
+          <div class="field">
+            <label for="master">Майстер</label>
+            <div class="select-wrap">
+              <select id="master" required>
+                <option value="kateryna">Катерина — манікюр/брови</option>
+                <option value="olena">Олена — педикюр/ресниці</option>
+                <option value="igor">Ігор — масаж</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="date">Дата</label>
+            <input id="date" type="date" required>
+          </div>
+
+          <div class="field">
+            <label for="time">Час</label>
+            <div class="select-wrap">
+              <select id="time" required></select>
+            </div>
+          </div>
+
+          <div class="wide">
+            <button class="btn" type="submit">Підтвердити запис</button>
+          </div>
+          <div id="summary" class="info wide" style="margin-top:6px"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast">Готово!</div>
+
+  <script>
+    /* Фіксація vh — без «стрибань» при клавіатурі */
+    (function lockVh(){
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    })();
+
+    /* Дані (демо) */
+    const SERVICES=[
+      {id:"mani",   name:"Манікюр класичний 💅",  duration_min:60, price:600},
+      {id:"gel",    name:"Покриття гель-лаком 💖", duration_min:75, price:800},
+      {id:"pedi",   name:"Педикюр 👣",             duration_min:70, price:700},
+      {id:"brows",  name:"Архітектура брів 👁️",   duration_min:45, price:500},
+      {id:"lashes", name:"Нарощення ресниць ✨",    duration_min:90, price:1100},
+      {id:"massage",name:"Масаж релакс 💆‍♀️",      duration_min:60, price:900},
+    ];
+    const MASTERS={
+      kateryna:"Катерина — манікюр/брови",
+      olena:"Олена — педикюр/ресниці",
+      igor:"Ігор — масаж"
+    };
+    const TIME_SLOTS=["10:00","11:30","13:00","15:00","16:30","18:00"];
+    const KEY_ALL="demo_bookings_all_teal", KEY_MINE="demo_bookings_mine_teal";
+
+    const $=s=>document.querySelector(s);
+    function toast(t){const el=$("#toast"); el.textContent=t; el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),2200)}
+    function readAll(){try{return JSON.parse(localStorage.getItem(KEY_ALL)||"[]")}catch{return[]}}
+    function writeAll(a){localStorage.setItem(KEY_ALL,JSON.stringify(a))}
+    function readMine(){try{return JSON.parse(localStorage.getItem(KEY_MINE)||"[]")}catch{return[]}}
+    function writeMine(a){localStorage.setItem(KEY_MINE,JSON.stringify(a))}
+    function todayISO(){return new Date().toISOString().slice(0,10)}
+    const fmtUAH=n=>`${n} грн`;
+
+    /* Прелоадер */
+    window.addEventListener("load",()=>setTimeout(()=>$("#loader").classList.add("hide"),350));
+
+    const serviceSel=$("#service"), serviceInfo=$("#serviceInfo"),
+          masterSel=$("#master"), dateInp=$("#date"), timeSel=$("#time"),
+          phoneInp=$("#phone"), nameInp=$("#name"), summary=$("#summary");
+
+    /* Послуги */
+    SERVICES.forEach(s=>{
+      const o=document.createElement("option");
+      o.value=s.id; o.textContent=`${s.name} — ${fmtUAH(s.price)}`;
+      serviceSel.appendChild(o);
+    });
+    function updateServiceInfo(){
+      const s=SERVICES.find(x=>x.id===serviceSel.value);
+      serviceInfo.textContent=s?`Тривалість: ${s.duration_min} хв • Вартість: ${fmtUAH(s.price)}`:"";
+    }
+    serviceSel.addEventListener("change",updateServiceInfo); updateServiceInfo();
+
+    /* Дата/час */
+    dateInp.value=todayISO();
+    function generateSlots(dateISO){
+      const busy=new Set(readAll().filter(b=>b.date===dateISO).map(b=>`${b.time}-${b.master}`));
+      timeSel.innerHTML="";
+      TIME_SLOTS.forEach(t=>{
+        const key=`${t}-${masterSel.value}`;
+        const opt=document.createElement("option");
+        opt.value=t; opt.textContent=t;
+        if(busy.has(key)){opt.disabled=true; opt.textContent=`${t} — зайнято`;}
+        timeSel.appendChild(opt);
+      });
+      const free=[...timeSel.options].find(o=>!o.disabled);
+      if(free) timeSel.value=free.value;
+    }
+    generateSlots(dateInp.value);
+    masterSel.addEventListener("change",()=>generateSlots(dateInp.value));
+    dateInp.addEventListener("change",()=>generateSlots(dateInp.value));
+
+    /* Телефон у форматі E.164 */
+    phoneInp.addEventListener("input",()=>{
+      let v=phoneInp.value.replace(/[^\d+]/g,"");
+      if(v[0]!=="+") v="+"+v.replace(/\+/g,"");
+      v="+"+v.slice(1).replace(/\D/g,"");
+      phoneInp.value=v;
+    });
+    const validPhone=v=>/^\+\d{10,15}$/.test(v);
+
+    /* Сабміт */
+    $("#bookForm").addEventListener("submit",e=>{
+      e.preventDefault();
+      const name=nameInp.value.trim();
+      const phone=phoneInp.value.trim();
+      if(!validPhone(phone)){toast("Невірний номер: формат +XXXXXXXXXX"); phoneInp.focus(); return;}
+      const srv=SERVICES.find(s=>s.id===serviceSel.value);
+      const master=masterSel.value, date=dateInp.value, time=timeSel.value;
+
+      const rec={id:Date.now().toString(36), name, phone,
+        service_id:srv.id, service_name:srv.name, price:srv.price,
+        master, master_name:MASTERS[master], date, time, created_at:new Date().toISOString()};
+
+      const all=readAll(); all.push(rec); writeAll(all);
+      const mine=readMine(); mine.push(rec); writeMine(mine);
+
+      summary.textContent=`✅ Запис підтверджено: ${srv.name} • ${MASTERS[master]} • ${date} ${time} • ${fmtUAH(srv.price)}`;
+      toast("Запис збережено 🎉");
+      generateSlots(date);
+      e.target.reset(); serviceSel.value=srv.id; updateServiceInfo(); dateInp.value=date; generateSlots(date);
+    });
+  </script>
+</body>
+</html>
